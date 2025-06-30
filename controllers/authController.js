@@ -6,35 +6,58 @@ const {generateToken} = require("../utils/generateToken");
 
 module.exports.registerUser = async (req, res) => {
     try {
-        let {fullname, email, password} = req.body;
+        let { email, password, fullname } = req.body;
 
         let user = await userModel.findOne({email: email});
-        if (user) return res.status(401).send("User already exists, Please Login");
+        if(user) return res.status(401).send("You already have an account, please Login");
 
-        bcrypt.genSalt(10,(err, salt) => {
-            bcrypt.hash(password, salt, async (err, hash) => {
-                if (err) return res.send(err.message)
-            else {
-                let user = await userModel.create({
-                    fullname,
-                    email,
-                    password: hash
-                });
-
-                let token = generateToken(user);
-                res.cookie("token", token);
-                res.redirect("/shop");
-            };
+        bcrypt.genSalt(10, function (err, salt) {
+            bcrypt.hash(password, salt, async function (err, hash) {
+                if (err) return err.send(err.message);
+                else {
+                    let user = await userModel.create({
+                        email,
+                        password:hash,
+                        fullname
+                    });
+                    let token = generateToken(user);
+                    res.cookie("token",token); // we are setting the token in the user browser
+                    res.send("user created successfully");
+                }
             })
         })
-    } catch (error) {
-        // res.status(500).send(error)
 
     }
+    catch (err) {
+        res.send(err.message);
+    }
+
 
 }
 
-module.exports.loginUser = async function (req, res) {
+module.exports.loginUser = async function (req,res) {
+    let {email, password}=req.body;
+    
+    let user = await userModel.findOne({email: email});
+    if(!user) return res.send("Email or Password incorrect!!");
+
+    //else, if user exists then login her/him
+
+    bcrypt.compare(password, user.password, function(err, result){
+        if(result)
+        {
+            let token = generateToken(user);
+            res.cookie("token",token);
+            res.redirect("/shop");
+        }
+        else{
+            return res.send("Email or Password incorrect!!");
+            res.redirect("/");
+        }
+    })
+};
+
+/*module.exports.loginUser = async function (req, res) {
     let {email, password} = req.body;
 
     let user = await userModel.findOne({email: email})
@@ -61,3 +84,29 @@ module.exports.logoutUser = function (req, res) {
     res.cookie("token", "");
     res.redirect("/");
 }
+
+function (req, res) {
+    try {
+        let { email, password, fullname } = req.body;
+
+        bcrypt.genSalt(10, function (err, salt) {
+            bcrypt.hash(password, salt, async function (err, hash) {
+                if (err) return err.send(err.message);
+                else {
+                    let user = await userModel.create({
+                        email,
+                        password:hash,
+                        fullname
+                    });
+                    let token = generateToken(user);
+                    res.cookie("token",token); // we are setting the token in the user browser
+                    res.send("user created successfully");
+                }
+            })
+        })
+
+    }
+    catch (err) {
+        res.send(err.message);
+    }
+}*/

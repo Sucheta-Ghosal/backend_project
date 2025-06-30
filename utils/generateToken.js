@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+/*const jwt = require("jsonwebtoken");
 
 function generateToken(user) {
   const secret = process.env.JWT_SECRET;          // <- use JWT_SECRET consistently
@@ -13,4 +13,13 @@ function generateToken(user) {
   );
 }
 
-module.exports = { generateToken };
+module.exports = { generateToken };*/
+
+const jwt = require('jsonwebtoken');
+
+//user details are sent to this function
+const generateToken = (user)=>{
+    return jwt.sign({ email: user.email, id:user._id},process.env.JWT_KEY);
+};
+module.exports.generateToken = generateToken;
+
