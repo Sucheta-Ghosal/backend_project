@@ -33,10 +33,12 @@
           <!-- image (optional) -->
           <div class="h-48 flex items-center justify-center bg-yellow-500">
             <% if (product.image) { %>
-              <% /* If you now store filenames on disk, swap the src accordingly */ %>
-              <img class="w-full h-full object-cover"
-                   src="/images/<%= product.image %>"
-                   alt="<%= product.name %>">
+              
+              <img
+                class="w-full h-full object-cover"
+                src="data:image/png;base64,<%= product.image.toString('base64') %>"
+                alt="<%= product.name %>"
+              />
             <% } else { %>
               <div class="flex items-center justify-center w-full h-full bg-gray-200 text-gray-500 text-sm">
                 No&nbsp;image

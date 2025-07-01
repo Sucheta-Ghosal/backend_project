@@ -1,10 +1,7 @@
 <%- include('./partials/header') %>
 
-<% /* ───────────────── Flash message ───────────────── */ %>
-<% if (typeof success !== 'undefined' && success.length > 0) { %>
-  <div
-    class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-blue-500"
-  >
+<% if(success.length > 0) { %>
+  <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-blue-500">
     <span class="inline-block mt-1 mb-1 text-white">
       <%= success %>
     </span>
@@ -12,10 +9,10 @@
 <% } %>
 
 <div class="w-full h-screen flex items-start px-20 py-20">
-  <!-- ░░ Left sidebar ░░ -->
+  <!-- ░░ Left Sidebar ░░ -->
   <div class="w-[25%] flex h-screen flex-col items-start">
     <div class="flex items-center gap-2">
-      <h3>sort by</h3>
+      <h3>Sort by</h3>
       <form action="/shop">
         <select class="border-[1px] px-2 py-1" name="sortby">
           <option value="popular">Popular</option>
@@ -25,24 +22,24 @@
     </div>
 
     <div class="flex flex-col mt-20">
-      <a class="block w-fit mb-2" href="">New Collection</a>
-      <a class="block w-fit mb-2" href="">All Products</a>
-      <a class="block w-fit mb-2" href="">Discounted Products</a>
+      <a class="block w-fit mb-2" href="#">New Collection</a>
+      <a class="block w-fit mb-2" href="#">All Products</a>
+      <a class="block w-fit mb-2" href="#">Discounted Products</a>
     </div>
 
     <div class="mt-32">
-      <a class="block w-fit mb-2" href="">Filter by :</a>
-      <a class="block w-fit mb-2" href="">Availability</a>
-      <a class="block w-fit mb-2" href="">Discount</a>
+      <a class="block w-fit mb-2" href="#">Filter by:</a>
+      <a class="block w-fit mb-2" href="#">Availability</a>
+      <a class="block w-fit mb-2" href="#">Discount</a>
     </div>
   </div>
 
-  <!-- ░░ Product grid ░░ -->
-  <div class="w-[75%] flex flex-col gap-5 h-screen">
+  <!-- ░░ Product Grid ░░ -->
+  <div class="w-[75%] flex flex-col gap-5 h-screen overflow-y-auto">
     <div class="flex items-start gap-5 flex-wrap">
       <% products.forEach(product => { %>
         <div class="w-60">
-          <!-- image (optional) -->
+          <!-- ░░ Image Container ░░ -->
           <div class="w-full flex items-center justify-center h-52 bg-yellow-500">
             <% if (product.image) { %>
               <img
@@ -57,19 +54,15 @@
             <% } %>
           </div>
 
-          <!-- name / price / add‑to‑cart -->
-          <div
-            class="flex justify-between items-center px-4 py-4"
-            style="background-color:<%= product.panelcolor %>;color:<%= product.textcolor %>;"
-          >
+          <!-- ░░ Product Details ░░ -->
+          <div class="flex justify-between items-center px-4 py-4"
+               style="background-color:<%= product.panelcolor %>;color:<%= product.textcolor %>;">
             <div>
               <h3><%= product.name %></h3>
               <h4>₹<%= product.price %></h4>
             </div>
-            <a
-              class="w-7 h-7 flex items-center justify-center rounded-full bg-white"
-              href="/addtocart/<%= product._id %>"
-            >
+            <a class="w-7 h-7 flex items-center justify-center rounded-full bg-white"
+               href="/addtocart/<%= product._id %>">
               <i class="ri-add-line"></i>
             </a>
           </div>
