@@ -16,6 +16,51 @@ router.get("/shop",isLoggedIn,async function (req, res) {
   res.render("shop", { products, success });
 });
 
+router.get("/addtocart/:productid", isLoggedIn, async function (req, res) {
+  // console.log(req.user);
+  let user = await userModel.findOne({ email: req.user.email });
+  user.cart.push(req.params.productid);
+  await user.save();
+  req.flash("success", "Added to cart");
+  res.redirect("/shop");
+});
+
+router.get("/cart", isLoggedIn, async (req, res, next) => {
+  try {
+    // 1) grab the logged‑in user and populate the products inside cart
+    const user = await userModel
+      .findOne({ email: req.user.email })
+      .populate("cart");              // cart now holds full product docs
+
+    if (!user) {
+      req.flash("error", "Please log in first");
+      return res.redirect("/");
+    }
+
+
+    // BILL : Each item:  base price + platform fee (20) – discount
+    const platformFee = 20;
+    const bill = (Number(user.cart[0].price)+platformFee - Number(user.cart[0].discount))
+
+
+    res.render("cart", { user, bill });
+  } catch (err) {
+    next(err);             
+    }
+});
+
+
+/*router.get("/cart", isLoggedIn, async function (req, res) {
+  let user = await userModel
+    .findOne({ email: req.user.email })
+    .populate("cart");
+
+    const bill = (Number(user.cart[0].price)+20 - Number(user.cart[0].discount))
+    
+    res.render("cart");
+  //res.render("cart", { user, bill });
+});*/
+
 /*router.post("/register",async function(req,res){
     try{
         let { email, password, fullname }=req.body;
@@ -39,15 +84,7 @@ router.get("/shop",isLoggedIn,async function (req, res) {
   res.render("shop", { products, success });
 });
 
-router.get("/cart", isLoggedIn, async function (req, res) {
-  let user = await userModel
-    .findOne({ email: req.user.email })
-    .populate("cart");
 
-    const bill = (Number(user.cart[0].price)+20 - Number(user.cart[0].discount))
-
-  res.render("cart", { user, bill });
-});
 
 router.get("/logout", isLoggedIn, function (req, res) {
   res.render("shop");

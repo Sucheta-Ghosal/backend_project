@@ -40,7 +40,20 @@ router.get("/admin", (req, res) => {
 });*/
 
 router.post("/create", async (req, res) => {
-  // your owner‑creation logic
+  let owners= await ownerModel.find();
+  if(owners.length > 0)
+  {
+    return res.status(403)
+              .send("You don't have permission to create a new owner.");
+  }
+
+  let { fullname, email, password }=req.body;
+
+  let createdOwner = await ownerModel.create({
+    fullname,
+    email,
+    password
+  });
   res.status(201).send("owner created");
 });
 
