@@ -9,7 +9,10 @@ module.exports.registerUser = async (req, res) => {
         let { email, password, fullname } = req.body;
 
         let user = await userModel.findOne({email: email});
-        if(user) return res.status(401).send("You already have an account, please Login");
+        if(user){
+            req.flash("error","You already have an account, please login");
+            return res.redirect("/");
+        }
 
         bcrypt.genSalt(10, function (err, salt) {
             bcrypt.hash(password, salt, async function (err, hash) {
@@ -39,7 +42,16 @@ module.exports.loginUser = async function (req,res) {
     let {email, password}=req.body;
     
     let user = await userModel.findOne({email: email});
-    if(!user) return res.send("Email or Password incorrect!!");
+    if(!user) {
+        req.flash("error","Email or Password incorrect");
+        return res.redirect("/");
+    }
+    /* compare passwords */
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      req.flash("error", "Email or Password incorrect");
+      return res.redirect("/");      
+    }
 
     //else, if user exists then login her/him
 
@@ -51,11 +63,15 @@ module.exports.loginUser = async function (req,res) {
             res.redirect("/shop");
         }
         else{
-            return res.send("Email or Password incorrect!!");
+            req.flash("error","Email or Password incorrect!!");
             res.redirect("/");
         }
     })
 };
+module.exports.logoutUser = function (req, res) {
+    res.cookie("token", "");
+    res.redirect("/");
+}
 
 /*module.exports.loginUser = async function (req, res) {
     let {email, password} = req.body;
@@ -80,10 +96,7 @@ module.exports.loginUser = async function (req,res) {
     })
 };
 
-module.exports.logoutUser = function (req, res) {
-    res.cookie("token", "");
-    res.redirect("/");
-}
+
 
 function (req, res) {
     try {
