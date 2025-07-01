@@ -38,7 +38,7 @@ router.get("/cart", isLoggedIn, async (req, res, next) => {
     }
 
 
-    // BILL : Each item:  base price + platform fee (20) – discount
+    // BILL :  Each item:  base price + platform fee (20) – discount
     const platformFee = 20;
     const bill = (Number(user.cart[0].price)+platformFee - Number(user.cart[0].discount))
 
@@ -47,6 +47,22 @@ router.get("/cart", isLoggedIn, async (req, res, next) => {
   } catch (err) {
     next(err);             
     }
+});
+
+router.get("/account", isLoggedIn, async (req, res, next) => {
+  try {
+    // Fetch the current user by email (or by _id if you store that)
+    const user = await userModel.findOne({ email: req.user.email });
+
+    if (!user) {
+      req.flash("error", "User not found");
+      return res.redirect("/");
+    }
+
+    res.render("account", { user });
+  } catch (err) {
+    next(err);
+  }
 });
 
 

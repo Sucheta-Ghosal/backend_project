@@ -1,0 +1,17 @@
+<%- include('./partials/header') %>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-16">
+  <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-8">
+    <h1 class="text-3xl font-semibold mb-6 text-center">My Account</h1>
+
+    <!-- User details -->
+    <div class="space-y-4">
+      <p><strong>Username:</strong> <%= user.fullname %></p>
+      <p><strong>Email:</strong> <%= user.email %></p>
+    </div>
+
+    
+  </div>
+</div>
+
+<%- include('./partials/footer') %>
