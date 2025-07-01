@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const ownerModel = require("../models/owner-model");
+const isLoggedIn = require("../middlewares/isLoggedIn");
+const isAdmin = require("../middlewares/isAdmin"); 
 
 if(process.env.NODE_ENV === "development"){
     router.post("/create", async (req, res) => {
@@ -20,12 +22,22 @@ if(process.env.NODE_ENV === "development"){
 
        res.status(201).send(createdOwner)
     })
-}
+};
+
+/*router.get("/admin",function(req,res){
+    res.send("hey its working");
+});*/
 
 router.get("/admin", (req, res) => {
     let success = req.flash("success");
     res.render("createproducts", { success });
 });
+
+// routes/ownersRouter.js (or a dedicated admin router)
+/*router.get("/products/all", isLoggedIn, isAdmin, async (req, res) => {
+  const products = await productModel.find();
+  res.render("allproducts", { products, success: req.flash("success"), error: req.flash("error") });
+});*/
 
 
 module.exports = router;

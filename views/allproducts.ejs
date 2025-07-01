@@ -1,0 +1,72 @@
+<%- include('./partials/header') %>
+
+<% /* ─────────── Flash message (success | error) ─────────── */ %>
+<% if (typeof success !== 'undefined' && success.length) { %>
+  <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-blue-500">
+    <span class="inline-block text-white"><%= success %></span>
+  </div>
+<% } %>
+<% if (typeof error !== 'undefined' && error.length) { %>
+  <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-red-500">
+    <span class="inline-block text-white"><%= error %></span>
+  </div>
+<% } %>
+
+<div class="min-h-screen flex">
+  <!-- ░░ Admin sidebar ░░ -->
+  <aside class="w-[22%] bg-gray-50 p-8 border-r">
+    <h2 class="text-xl font-semibold mb-6">Admin panel</h2>
+    <nav class="flex flex-col gap-3">
+      <a class="text-blue-600 hover:underline" href="/owners/admin">Dashboard</a>
+      <a class="text-blue-600 hover:underline" href="/owners/admin">Create new product</a>
+      
+    </nav>
+  </aside>
+
+  <!-- ░░ Product grid ░░ -->
+  <main class="flex-1 px-16 py-12">
+    <h1 class="text-2xl font-bold mb-6">All products</h1>
+
+    <div class="flex flex-wrap gap-6">
+      <% products.forEach(product => { %>
+        <div class="w-60 shadow rounded overflow-hidden">
+          <!-- image (optional) -->
+          <div class="h-48 flex items-center justify-center bg-yellow-500">
+            <% if (product.image) { %>
+              <% /* If you now store filenames on disk, swap the src accordingly */ %>
+              <img class="w-full h-full object-cover"
+                   src="/images/<%= product.image %>"
+                   alt="<%= product.name %>">
+            <% } else { %>
+              <div class="flex items-center justify-center w-full h-full bg-gray-200 text-gray-500 text-sm">
+                No&nbsp;image
+              </div>
+            <% } %>
+          </div>
+
+          <!-- name / price -->
+          <div class="px-4 py-3"
+               style="background-color:<%= product.panelcolor %>; color:<%= product.textcolor %>;">
+            <h3 class="font-medium"><%= product.name %></h3>
+            <p class="text-sm">₹<%= product.price %></p>
+          </div>
+
+          <!-- admin icons -->
+          <div class="flex justify-between items-center px-4 py-2 bg-gray-50">
+            <a href="/products/edit/<%= product._id %>"
+               class="text-blue-600 hover:underline text-sm flex items-center gap-1">
+              <i class="ri-pencil-line"></i> Edit
+            </a>
+            <a href="/products/delete/<%= product._id %>"
+               class="text-red-600 hover:underline text-sm flex items-center gap-1"
+               onclick="return confirm('Delete this product?');">
+              <i class="ri-delete-bin-line"></i> Delete
+            </a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+</div>
+
+<%- include('./partials/footer') %>

@@ -55,5 +55,21 @@ router.post("/create", upload.single("image"), async (req, res) => {
   }
 });
 
+router.get("/all", async (req, res) => {
+  try {
+    const products = await productModel.find();
+
+    res.render("allproducts", {
+      products,
+      success: req.flash("success"),
+      error:   req.flash("error")
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
 module.exports = router;
 
