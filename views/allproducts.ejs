@@ -35,10 +35,10 @@
                                     <% products.forEach(product=> { %>
                                         <div class="w-60 shadow rounded overflow-hidden">
                                             <!-- image (optional) -->
-                                            <div class="h-48 flex items-center justify-center bg-yellow-500">
+                                            <div class="h-48 flex items-center justify-center bg-<%= product.bgcolor %>">
                                                 <% if (product.image) { %>
 
-                                                    <img class="w-full h-full object-cover"
+                                                    <img class="h-[12rem]"
                                                         src="data:image/png;base64,<%= product.image.toString('base64') %>"
                                                         alt="<%= product.name %>" />
                                                     <% } else { %>
